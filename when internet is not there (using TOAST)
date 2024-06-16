@@ -1,0 +1,93 @@
+package com.helium
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.KeyEvent
+import android.webkit.WebView
+import android.webkit.WebViewClient
+
+import android.widget.Toast
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var myWebView: WebView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Finding view by ID, which has to be deployed on the web browser
+        myWebView = findViewById(R.id.web01)
+
+        // Enabling JavaScript
+        myWebView.settings.javaScriptEnabled = true
+
+        // Loading URL
+        // actual URL to implement is: https://sites.google.com/view/snacikifyy/home
+        // the url which successfully renders with the emulator is: https://www.google.com
+        myWebView.loadUrl("https://sites.google.com/view/snackifyy/home")
+
+
+        // Set a WebViewClient to handle page navigation
+        myWebView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                view?.loadUrl(url ?: "")
+                return true
+            }
+
+            //handling when internet is not there on the system (I am using toast in following code)
+            //though the best way would be to make an activity and display that activity stating "message()
+            //Please Check Your Internet Connection"
+            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+                super.onReceivedError(view, errorCode, description, failingUrl)
+                showToast("Please check your internet connection")
+            }
+
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.action == KeyEvent.ACTION_DOWN) {
+            when (keyCode) {
+                KeyEvent.KEYCODE_BACK -> {
+                    if (myWebView.canGoBack()) {
+                        myWebView.goBack() // Go back to the previous page
+                    } else {
+                        finish() // Close the app if no history
+                    }
+                    return true
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    //defining toast function
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
